@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stadium Placement Game</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: yellow;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    #start-screen {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    #start-button {
+      font-size: 2rem;
+      padding: 10px 20px;
+      cursor: pointer;
+      background: yellow;
+      color: black;
+      border: none;
+      border-radius: 5px;
+    }
+
+    #intro {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      perspective: 300px;
+      overflow: hidden;
+    }
+
+    #intro-text {
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      width: 800px;
+      margin-left: -400px;
+      font-size: 2rem;
+      text-align: justify;
+      transform-origin: 50% 100%;
+      transform: rotateX(25deg);
+      animation: scroll 30s linear forwards;
+    }
+
+    @keyframes scroll {
+      0% {
+        top: 100%;
+      }
+      100% {
+        top: -200%;
+      }
+    }
+
+    #game-screen {
+      display: none;
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      background: url('map.jpg') no-repeat center center/cover;
+    }
+
+    #stadium {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background: url('stadium.png') no-repeat center center/contain;
+      cursor: pointer;
+    }
+
+    #message {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 1.5rem;
+      color: red;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="start-screen">
+    <button id="start-button">Start</button>
+  </div>
+
+  <div id="intro">
+        <div id="intro-text">
+          <p>A long time ago, in a city not so far away...</p>
+          <p>It is a period of bureaucratic chaos. The Queensland Government, in its infinite wisdom, has decided to host the Olympic Games in Brisbane. But alas, poor planning and reckless decisions have left the city in disarray.</p>
+          <p>Rebel planners struggle to find suitable locations for stadiums and swimming pools, while the citizens of Brisbane cry out in confusion. Traffic jams stretch from the CBD to the Gold Coast, and construction cranes dot the skyline like confused metal giraffes.</p>
+          <p>In a desperate bid to save the Games, the government has turned to YOU, a brave and slightly bewildered citizen, to help place the stadiums and pools in the least disastrous locations possible.</p>
+          <p>Will you rise to the challenge and save Brisbane from Olympic-sized embarrassment? Or will the Games become a galactic joke, remembered for all time as the "Great Brisbane Blunder"?</p>
+          <p>The fate of the city rests in your hands. May the odds be ever in your favor... or at least better than the government's planning skills.</p>
+        </div>
+  </div>
+
+  <div id="game-screen">
+    <div id="stadium"></div>
+    <div id="message">That is the wrong place, please try again.</div>
+  </div>
+
+  <script>
+    const startButton = document.getElementById('start-button');
+    const startScreen = document.getElementById('start-screen');
+    const intro = document.getElementById('intro');
+    const gameScreen = document.getElementById('game-screen');
+    const stadium = document.getElementById('stadium');
+    const message = document.getElementById('message');
+
+    // Start the game
+    startButton.addEventListener('click', () => {
+      startScreen.style.display = 'none';
+      intro.style.display = 'block';
+
+      // Wait for the intro to finish (30 seconds)
+      setTimeout(() => {
+        intro.style.display = 'none';
+        gameScreen.style.display = 'block';
+      }, 30000);
+    });
+
+    // Stadium placement logic
+    stadium.addEventListener('click', (event) => {
+      event.stopPropagation(); // Prevent map click from interfering
+      message.style.display = 'block';
+
+      // Hide message after 2 seconds
+      setTimeout(() => {
+        message.style.display = 'none';
+      }, 2000);
+    });
+
+    // Allow dragging the stadium
+    let isDragging = false;
+    let offsetX, offsetY;
+
+    stadium.addEventListener('mousedown', (event) => {
+      isDragging = true;
+      offsetX = event.clientX - stadium.offsetLeft;
+      offsetY = event.clientY - stadium.offsetTop;
+    });
+
+    document.addEventListener('mousemove', (event) => {
+      if (isDragging) {
+        stadium.style.left = `${event.clientX - offsetX}px`;
+        stadium.style.top = `${event.clientY - offsetY}px`;
+      }
+    });
+
+    document.addEventListener('mouseup', () => {
+      isDragging = false;
+    });
+  </script>
+</body>
+</html>
