@@ -78,6 +78,7 @@
       height: 50px;
       background: url('stadium.png') no-repeat center center/contain;
       cursor: pointer;
+      transition: top 0.5s ease, left 0.5s ease;
     }
 
     #instruction {
@@ -138,6 +139,10 @@
     const stadium = document.getElementById('stadium');
     const message = document.getElementById('message');
 
+    let isDragging = false;
+    let lastInteractionTime = Date.now();
+    let naughtyInterval;
+
     // Start the game
     startButton.addEventListener('click', () => {
       startScreen.style.display = 'none';
@@ -153,8 +158,24 @@
         setTimeout(() => {
           instruction.style.display = 'none';
         }, 3000);
+
+        // Start the naughty stadium behavior
+        naughtyInterval = setInterval(moveStadiumErratically, 2000);
       }, 30000);
     });
+
+    // Move the stadium erratically
+    function moveStadiumErratically() {
+      if (!isDragging && Date.now() - lastInteractionTime > 2000) {
+        const mapWidth = gameScreen.offsetWidth;
+        const mapHeight = gameScreen.offsetHeight;
+        const newX = Math.random() * (mapWidth - stadium.offsetWidth);
+        const newY = Math.random() * (mapHeight - stadium.offsetHeight);
+
+        stadium.style.left = `${newX}px`;
+        stadium.style.top = `${newY}px`;
+      }
+    }
 
     // Stadium placement logic
     stadium.addEventListener('click', (event) => {
@@ -168,17 +189,18 @@
     });
 
     // Allow dragging the stadium
-    let isDragging = false;
     let offsetX, offsetY;
 
     stadium.addEventListener('mousedown', (event) => {
       isDragging = true;
+      lastInteractionTime = Date.now();
       offsetX = event.clientX - stadium.offsetLeft;
       offsetY = event.clientY - stadium.offsetTop;
     });
 
     document.addEventListener('mousemove', (event) => {
       if (isDragging) {
+        lastInteractionTime = Date.now();
         stadium.style.left = `${event.clientX - offsetX}px`;
         stadium.style.top = `${event.clientY - offsetY}px`;
       }
@@ -186,6 +208,7 @@
 
     document.addEventListener('mouseup', () => {
       isDragging = false;
+      lastInteractionTime = Date.now();
     });
   </script>
 </body>
