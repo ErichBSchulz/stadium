@@ -95,16 +95,30 @@
     }
 
     #message {
-      position: absolute;
-      bottom: 20px;
+      position: fixed;
+      top: 50%;
       left: 50%;
-      transform: translateX(-50%);
-      font-size: 1.5rem;
+      transform: translate(-50%, -50%);
+      font-size: 2rem;
       color: red;
-      background: rgba(0, 0, 0, 0.7);
-      padding: 10px 20px;
-      border-radius: 5px;
+      background: rgba(0, 0, 0, 0.9);
+      padding: 20px 40px;
+      border-radius: 10px;
+      border: 2px solid red;
       display: none;
+      z-index: 1000;
+      text-align: center;
+    }
+
+    #dismiss-button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      background: red;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -127,7 +141,10 @@
   <div id="game-screen">
     <div id="instruction">Please drag the stadium to a suitable place to save Queensland... or at least try not to make it worse!</div>
     <div id="stadium"></div>
-    <div id="message">That is the wrong place, please try again.</div>
+    <div id="message">
+      That is the wrong place, please try again.
+      <button id="dismiss-button">Dismiss</button>
+    </div>
   </div>
 
   <script>
@@ -138,6 +155,7 @@
     const instruction = document.getElementById('instruction');
     const stadium = document.getElementById('stadium');
     const message = document.getElementById('message');
+    const dismissButton = document.getElementById('dismiss-button');
 
     let isDragging = false;
     let lastInteractionTime = Date.now();
@@ -181,11 +199,11 @@
     stadium.addEventListener('click', (event) => {
       event.stopPropagation(); // Prevent map click from interfering
       message.style.display = 'block';
+    });
 
-      // Hide message after 2 seconds
-      setTimeout(() => {
-        message.style.display = 'none';
-      }, 2000);
+    // Dismiss the message
+    dismissButton.addEventListener('click', () => {
+      message.style.display = 'none';
     });
 
     // Allow dragging the stadium
